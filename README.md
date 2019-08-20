@@ -1,10 +1,11 @@
-This is a relatively simple templating engine I developed for another project (fforthcoming).
+This is a relatively simple templating engine I developed for another project (forthcoming).
 
 After consideration, I'm releasing this early as its usefulness far extends beyond my other project.
 
 Future Plans:
 Documentation and Examples!
 Variable globbing (or regex?)
+
 Filters
 - Uppercase
 - Lowercase
