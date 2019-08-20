@@ -7,7 +7,9 @@ Future Plans:
   Documentation and Examples!
 
   Variable globbing (or regex?)
+  
   Filters
+  
   - Uppercase
   - Lowercase
   - First letter of word
