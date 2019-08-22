@@ -27,13 +27,16 @@ def getVarsFromString(rawstring):
 
 def mergeVars(varList, dataSet):
     mergedDict = {}
+    # FIXME: Account for variable not in dataset case.
     for var in varList:
         mergedDict[var] = dataSet[var[2:-2]]
     return mergedDict
 
 def mangleString(rawstring, dataSet):
     for var in dataSet.keys():
-        # FIXME: This shouldn't be necessary...
+        # Needed if mangleString is called directly, without processing through the other functions.
+        # This is slightly more efficient, but unmatched template variables will be left in place,
+        # and planned future functionality will not work.
         if not '{{' in var:
             newVar = '{{' + var
             if not '}}' in var:
@@ -46,7 +49,7 @@ def mangleString(rawstring, dataSet):
 def buildString(rawstring, dataSet):
     varList = getVarsFromString(rawstring)
     varDict = mergeVars(varList, dataSet)
-    newstring = mangleString(rawstring, dataSet)
+    newstring = mangleString(rawstring, varDict)
     return newstring
 
 def buildCollection(collection, dataSet):
