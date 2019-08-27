@@ -8,13 +8,9 @@ Future Plans:
 
   Variable globbing (or regex?)
   
-  Filters
-  
-  - Uppercase
-  - Lowercase
-  - First letter of word
-  - First letter of all words
-  - Pre & Post padding with given character
+Update:
+
+  Filters now supported!
 
 There are no plans of adding branching or looping, as this is intended on being
 as light as possible.

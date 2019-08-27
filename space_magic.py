@@ -6,6 +6,54 @@
 import re
 
 # Cthulu inspired black magic from your nightmares!
+def wordsToNumbers(string):
+    numDict = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+               "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10"}
+    for word in string.split():
+        if word.lower() in numDict:
+            string = string.replace(word, numDict[word.lower()])
+    return string
+
+def processFilters(string, filters):
+    outstring = ''
+    if filters[0] == 'first_letter_of_words' or filters[0] == 'flow':
+        for word in string.split():
+            outstring = outstring + word[0]
+    elif filters[0] == 'lower':
+        outstring = string.lower()
+    elif filters[0] == 'upper':
+        outstring = string.upper()
+    elif filters[0] == 'reverse_chars':
+        outstring = string[::-1]
+    elif filters[0] == 'reverse_words':
+        outstring = " ".join(string.split()[::-1])
+    elif filters[0] == 'words_to_numbers' or filters[0] == 'wtn':
+        outstring = wordsToNumbers(string)
+    elif '_padding' in filters[0]:
+        formatString = filters[0].replace('_padding', '')
+        outstring = formatString.format(string)
+    elif '_character' in filters[0]:
+        word_num = filters[0].replace('_character', '')
+        if ':' in word_num:
+            start = int(word_num.split(':')[0])
+            end = int(word_num.split(':')[1])
+            outstring = string[start:end]
+        else:
+            outstring = string[int(word_num)]
+    elif '_word' in filters[0]:
+        word_num = filters[0].replace('_word', '')
+        if ':' in word_num:
+            start = int(word_num.split(':')[0])
+            end = int(word_num.split(':')[1])
+            outstring = " ".join(string.split()[start:end])
+        else:
+            outstring = string.split()[int(word_num)]
+    else:
+        outstring = string
+    if filters[1:]:
+        outstring = processFilters(outstring, filters[1:])
+    return outstring
+
 def getVarsFromString(rawstring):
     start = re.compile("{{")
     finish = re.compile("}}")
@@ -29,7 +77,16 @@ def mergeVars(varList, dataSet):
     mergedDict = {}
     # FIXME: Account for variable not in dataset case.
     for var in varList:
-        mergedDict[var] = dataSet[var[2:-2]]
+        filters = []
+        if '||' in var:
+            rawVar = var.strip('{{').strip('}}')
+            filters = rawVar.split('||')
+            newVar = '{{' + filters[0] + '}}'
+        else:
+            newVar = var
+        mergedDict[var] = dataSet[newVar[2:-2]]
+        if filters:
+            mergedDict[var] = processFilters(mergedDict[var], filters[1:])
     return mergedDict
 
 def mangleString(rawstring, dataSet):
