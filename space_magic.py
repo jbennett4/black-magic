@@ -29,10 +29,15 @@ def processFilters(string, filters):
         outstring = " ".join(string.split()[::-1])
     elif filters[0] == 'words_to_numbers' or filters[0] == 'wtn':
         outstring = wordsToNumbers(string)
-    # Current use of string format method is unsafe due to unrestricted access being given to it via templates.
+        
+        
+    # Current use of string format method is unsafe due to
+    # unrestricted access being given to it via templates.
     #elif '_padding' in filters[0]:
     #    formatString = filters[0].replace('_padding', '')
     #    outstring = formatString.format(string)
+    
+    
     elif '_character' in filters[0]:
         word_num = filters[0].replace('_character', '')
         if ':' in word_num:
