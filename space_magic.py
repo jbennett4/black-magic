@@ -16,38 +16,39 @@ def wordsToNumbers(string):
 
 def processFilters(string, filters):
     outstring = ''
-    if filters[0] == 'first_letter_of_words' or filters[0] == 'flow':
+    filter = filters[0].lstrip().rstrip()
+    if filter == 'first_letter_of_words' or filter == 'flow':
         for word in string.split():
             outstring = outstring + word[0]
-    elif filters[0] == 'lower':
+    elif filter == 'lower':
         outstring = string.lower()
-    elif filters[0] == 'upper':
+    elif filter == 'upper':
         outstring = string.upper()
-    elif filters[0] == 'reverse_chars':
+    elif filter == 'reverse_chars':
         outstring = string[::-1]
-    elif filters[0] == 'reverse_words':
+    elif filter == 'reverse_words':
         outstring = " ".join(string.split()[::-1])
-    elif filters[0] == 'words_to_numbers' or filters[0] == 'wtn':
+    elif filter == 'words_to_numbers' or filter == 'wtn':
         outstring = wordsToNumbers(string)
-        
-        
+
+
     # Current use of string format method is unsafe due to
     # unrestricted access being given to it via templates.
     #elif '_padding' in filters[0]:
     #    formatString = filters[0].replace('_padding', '')
     #    outstring = formatString.format(string)
-    
-    
-    elif '_character' in filters[0]:
-        word_num = filters[0].replace('_character', '')
+
+
+    elif '_character' in filter:
+        word_num = filter.replace('_character', '')
         if ':' in word_num:
             start = int(word_num.split(':')[0])
             end = int(word_num.split(':')[1])
             outstring = string[start:end]
         else:
             outstring = string[int(word_num)]
-    elif '_word' in filters[0]:
-        word_num = filters[0].replace('_word', '')
+    elif '_word' in filter:
+        word_num = filter.replace('_word', '')
         if ':' in word_num:
             start = int(word_num.split(':')[0])
             end = int(word_num.split(':')[1])
@@ -84,13 +85,14 @@ def mergeVars(varList, dataSet):
     # FIXME: Account for variable not in dataset case.
     for var in varList:
         filters = []
-        if '||' in var:
+        if '|' in var:
             rawVar = var.strip('{{').strip('}}')
-            filters = rawVar.split('||')
-            newVar = '{{' + filters[0] + '}}'
+            filters = rawVar.split('|')
+            newVar = '{{' + filters[0].lstrip().rstrip() + '}}'
         else:
             newVar = var
-        mergedDict[var] = dataSet[newVar[2:-2]]
+            print(newVar)
+        mergedDict[var] = dataSet[newVar[2:-2].lstrip().rstrip()]
         if filters:
             mergedDict[var] = processFilters(mergedDict[var], filters[1:])
     return mergedDict
